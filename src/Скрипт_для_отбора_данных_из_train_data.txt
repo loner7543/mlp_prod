@@ -1,0 +1,73 @@
+import javax.xml.soap.SOAPPart;
+import java.io.*;
+import java.util.*;
+
+public class MLP {
+
+
+    static double max(double data[][], int i) {
+        double max = data[0][i];
+
+        for (int j = 0; j < 129; j++)
+            if (data[j][i] > max) max = data[j][i];
+
+        return max;
+    }
+
+
+
+    public static void main(String[] args) {
+        double buffer;
+        FileWriter fileWriter,fileWriter_test;
+        String string, s[];
+        double max;
+
+
+        //129
+        double data[][]=new double [204][6];
+        int l=0;
+        int t=0;
+        try {
+            Scanner scanner = new Scanner(new File("train.txt"));
+            fileWriter = new FileWriter("new_train_data.txt", false);
+            fileWriter_test=new FileWriter("new_test_data.txt",false);
+            while (scanner.hasNextLine()) {
+                string = scanner.nextLine();
+                s = string.split("\\,");
+                for (int i = 0; i < s.length; i++) {
+                    if ((i>8)&&(i<14)) {
+                        buffer = Double.parseDouble(s[i]);
+                        data[l][i-9] = buffer;
+                    }
+                }
+                data[l][5]=(int)l/68;
+                l++;
+
+            }
+            System.out.println(l);
+            for (int i=0;i<5;i++){
+                double maximum=max(data,i);
+                for (int k=0;k<data.length;k++)
+                    data[k][i]/=maximum;
+
+            }
+
+
+            for (int j = 0; j < data.length; j++) {
+                for (int k=0;k<6;k++) {
+                    fileWriter.write(String.valueOf(data[j][k]));
+                    fileWriter.write(",");
+                }
+                //fileWriter.write(String.valueOf(data[j][0]));
+                fileWriter.append(System.getProperty("line.separator"));
+            }
+
+            fileWriter.close();
+            fileWriter_test.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

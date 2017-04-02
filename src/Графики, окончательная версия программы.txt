@@ -1,0 +1,86 @@
+
+import java.io.*;
+import java.util.*;
+
+public class MLP {
+
+
+    static double max(double data[][], int i) {
+        double max = data[0][0];
+
+        for (int j = 0; j < 130; j++)
+            if (data[j][i] > max) max = data[j][i];
+
+
+        return max;
+    }
+
+    static void add_collection(ArrayList<double[]> a[],double x[],int number ){
+
+        double y[]=new double[x.length];
+        for (int i=0;i<x.length;i++)
+            y[i]=x[i];
+        a[number].add(y);
+
+    }
+
+
+    public static void main(String[] args) {
+        double buffer;
+        FileWriter fileWriter,fileWriter_test;
+        String string, s[];
+        double max;
+        double[] features=new double [16];
+
+      /*  ArrayList<double[]> a[]=new ArrayList[3];
+        for (int i=0;i<10;i++)
+            a[i]=new ArrayList<double[]>();*/
+
+        double data[][]=new double [129][5];
+        double test_data[][] = new double [30][5];
+        Perceptrone_model perceptrone_neural_network = new Perceptrone_model(3,data[0].length,5,3);
+        int l=0;
+        try {
+            Scanner scanner = new Scanner(new File("new_train_data.txt"));
+            Scanner scanner2  = new Scanner("new_test_data.txt");
+            while (scanner.hasNextLine()) {
+                string = scanner.nextLine();
+                s = string.split("\\ ");
+                System.out.println(s);
+                for (int i = 0; i < 5; i++) {
+                    buffer = Double.parseDouble(s[i]);
+                    data[l][i]=buffer;
+                }
+                l++;
+            }
+            l=0;
+            while (scanner2.hasNextLine()) {
+                string = scanner2.nextLine();
+                s = string.split("\\ ");
+                for (int i = 0; i < 5; i++) {
+                    buffer = Double.parseDouble(s[i]);
+                    test_data[l][i]=buffer;
+                }
+                l++;
+            }
+            perceptrone_neural_network.training(data,test_data);
+            System.out.println(perceptrone_neural_network.erorr(test_data));
+            System.out.println(perceptrone_neural_network.check_number_of_right(test_data));
+
+
+
+
+               /* for (int j = data.length-5; j < data.length; j++) {
+                    for (int k=1;k<14;k++) {
+                        fileWriter_test.write(String.valueOf(data[j][k]));
+                        fileWriter_test.write(" ");
+                    }
+                    fileWriter_test.write(String.valueOf(data[j][0]));
+                    fileWriter_test.append(System.getProperty("line.separator"));
+                }*/
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+}

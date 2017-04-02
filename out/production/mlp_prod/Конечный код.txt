@@ -1,0 +1,150 @@
+
+
+import java.io.*;
+import java.util.*;
+
+//130 ������� ��� �������� � �����
+
+public class MLP {
+
+    Cohen_Neural_Netwok cohen;
+    Perceptrone_model perceptrone_model;
+
+    public MLP(){
+        cohen=new Cohen_Neural_Netwok();
+        perceptrone_model=new Perceptrone_model(3,cohen.get_output_dimension(),15,3);
+
+    }
+
+
+    public static void main(String[] args) {
+
+     /*   XSSFWorkbook my_workbook = new XSSFWorkbook();
+
+        XSSFSheet my_worksheet = my_workbook.createSheet("LineChart");*/
+
+        double buffer;
+        String string, s[];
+        double data_cohen[][];
+        double data_percepthrone[][];
+        double data_cohen2[][];
+        double data_percepthrone2[][];
+
+        int j=0;
+        MLP hybrid_neural_network=new MLP();
+
+        double output_kohen[];
+
+
+        try {
+            data_cohen2=new double [15][hybrid_neural_network.cohen.get_input_dimension()];
+            data_percepthrone2=new double [15][hybrid_neural_network.cohen.get_output_dimension()+1];
+            Scanner scanner = new Scanner(new File("new_train_data.txt"));
+            Scanner read_scanner_test_data=new Scanner(new File("new_test_data.txt"));
+
+            while (read_scanner_test_data.hasNextLine()) {
+                string = read_scanner_test_data.nextLine();
+                s = string.split("\\ ");
+                for (int i = 0; i < 14; i++) {
+                    if (i!=13)
+                        data_cohen2[j][i] = Double.parseDouble(s[i]);
+                    else
+                        data_percepthrone2[j][hybrid_neural_network.cohen.get_output_dimension()]= Double.parseDouble(s[i]);
+                }
+                j++;
+            }
+
+            j=0;
+
+
+            scanner.close();
+            data_cohen = new double[163][hybrid_neural_network.cohen.get_input_dimension()];
+            data_percepthrone=new double[163][hybrid_neural_network.cohen.get_output_dimension()+1];
+
+            j = 0;
+
+            Scanner scanner2 = new Scanner(new File("new_train_data.txt"));
+            while (scanner2.hasNextLine()) {
+                string = scanner2.nextLine();
+                s = string.split("\\ ");
+                for (int i = 0; i < 14; i++) {
+                    if (i!=13) data_cohen[j][i]=Double.parseDouble(s[i]);
+                    else
+                        data_percepthrone[j][hybrid_neural_network.cohen.get_output_dimension()]=Double.parseDouble(s[i]);
+                }
+                j++;
+            }
+
+            hybrid_neural_network.cohen.read_weights_from_file();
+            for (int i=0;i<j;i++){
+                hybrid_neural_network.cohen.First_layer_set(data_cohen[i]);
+                hybrid_neural_network.cohen.Dot_product();
+                output_kohen=hybrid_neural_network.cohen.get_output_layer();
+                for (int k=0; k<hybrid_neural_network.cohen.get_output_dimension();k++)
+                {
+                    data_percepthrone[i][k]=output_kohen[k];
+                }
+
+            }
+            for (int i=0;i<data_cohen2.length;i++){
+                hybrid_neural_network.cohen.First_layer_set(data_cohen2[i]);
+                hybrid_neural_network.cohen.Dot_product();
+                output_kohen=hybrid_neural_network.cohen.get_output_layer();
+                for (int k=0; k<hybrid_neural_network.cohen.get_output_dimension();k++)
+                {
+                    data_percepthrone2[i][k]=output_kohen[k];
+                }
+            }
+            hybrid_neural_network.perceptrone_model.training(data_percepthrone,data_percepthrone2);
+            System.out.println(hybrid_neural_network.perceptrone_model.erorr(data_percepthrone2));
+            System.out.println(hybrid_neural_network.perceptrone_model.check_number_of_right(data_percepthrone2));
+
+
+
+
+       /*   int colindex;
+            for (int k=0;k<3;k++) {
+                colindex=0;
+                XSSFRow my_row = my_worksheet.createRow((short) k);
+
+                for (int i = 1000; i < 20000; i+=500) {
+                    if (k==0){
+                        XSSFCell cell = my_row.createCell((short) colindex);
+                        cell.setCellValue(i);
+                        colindex++;
+                    }
+                    if (k==1) {
+                        Perceptrone_model a=new Perceptrone_model(3,hybrid_neural_network.cohen.get_output_dimension(),15,3);
+                        XSSFCell cell = my_row.createCell((short) colindex);
+                        a.Setnumber_of_epoch(i);
+                        a.training(data_percepthrone,data_percepthrone2);
+                        cell.setCellValue(a.erorr(data_percepthrone2));
+                        System.out.println(a.erorr(data_percepthrone2));
+                        colindex++;
+                        System.out.println(colindex);
+                    }
+                    if (k==2) {
+                        Perceptrone_model a=new Perceptrone_model(3,hybrid_neural_network.cohen.get_output_dimension(),15,3);
+                        XSSFCell cell = my_row.createCell((short) colindex);
+                        a.Setnumber_of_epoch(i);
+                        a.training(data_percepthrone,data_percepthrone2);
+                        cell.setCellValue(a.check_number_of_right(data_percepthrone2));
+                        colindex++;
+                    }
+                }
+            }*/
+
+        }catch(IOException e){e.printStackTrace();}
+
+
+
+       /* try (FileOutputStream fileout = new FileOutputStream("xlsx-line-chart.xlsx")) {
+            my_workbook.write(fileout);
+
+        } catch (IOException ex) {
+            System.out.println(ex.getMessage());
+
+        }*/
+
+    }
+}
